@@ -1,7 +1,7 @@
 node {
     environment {
         registry = "remiphilipppe/demo-policy-pipeline"
-        registryCredential = 'dockerhub'
+        registryCredential = 'docker-hub-remiphilippe'
     }
 
     ws("${JENKINS_HOME}/jobs/${JOB_NAME}/builds/${BUILD_ID}/") {
@@ -55,7 +55,7 @@ node {
                 sh """cd $GOPATH/src/cmd/project/ && make build"""
             }
             
-            docker.withRegistry('', registryCredential) {
+            docker.withRegistry('', "${registryCredential}") {
                 sh "git rev-parse HEAD > .git/commit-id"
                 def commit_id = readFile('.git/commit-id').trim()
                 println commit_id
