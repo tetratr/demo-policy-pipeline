@@ -55,17 +55,13 @@ node {
                 sh """cd $GOPATH/src/cmd/project/ && make build"""
             }
             
-            stage('Building image') {
-                dockerImage = docker.build registry + ":${BUILD_NUMBER}"
-            }
-
             docker.withRegistry('', registryCredential) {
                 sh "git rev-parse HEAD > .git/commit-id"
                 def commit_id = readFile('.git/commit-id').trim()
                 println commit_id
 
                 stage('build image') {
-                    def app = docker.build registry
+                    def app = docker.build "${registry}"
                 }
                 
 
