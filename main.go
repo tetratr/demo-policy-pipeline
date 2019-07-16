@@ -1,6 +1,8 @@
 package main
 
 import (
+	"flag"
+	"fmt"
 	"net/http"
 	"os"
 	"strconv"
@@ -27,9 +29,9 @@ func queryDB(c echo.Context) error {
 	env := c.Param("env")
 
 	if env == "dev" {
-		db, err = sql.Open("mysql", "dev:dev@172.20.0.191/dev?charset=utf8")
+		db, err = sql.Open("mysql", fmt.Sprintf("dev:dev@tcp(%s:3306)/dev?charset=utf8", devDBAddress))
 	} else {
-		db, err = sql.Open("mysql", "prod:prod@172.20.0.192/prod?charset=utf8")
+		db, err = sql.Open("mysql", fmt.Sprintf("prod:prod@tcp(%s:3306)/prod?charset=utf8", prodDBAddress))
 	}
 
 	if err != nil {
@@ -44,20 +46,20 @@ func queryDB(c echo.Context) error {
 	}
 
 	for rows.Next() {
-		var uid int
-		var username string
-		var department string
-		var created string
+		var uid sql.NullInt64
+		var username sql.NullString
+		var department sql.NullString
+		var created sql.NullString
 
 		err = rows.Scan(&uid, &username, &department, &created)
 		if err != nil {
 			glog.Errorf("error: %s\n", err)
 			return c.JSON(http.StatusInternalServerError, err)
 		}
-		res["uid"] = strconv.Itoa(uid)
-		res["username"] = username
-		res["department"] = department
-		res["created"] = created
+		res["uid"] = strconv.Itoa(int(uid.Int64))
+		res["username"] = username.String
+		res["department"] = department.String
+		res["created"] = created.String
 	}
 
 	db.Close()
@@ -66,6 +68,11 @@ func queryDB(c echo.Context) error {
 }
 
 func main() {
+	flag.Parse()
+
+	flag.Lookup("logtostderr").Value.Set("true")
+	flag.Lookup("v").Value.Set("2")
+
 	e := echo.New()
 
 	// Get values from env
@@ -78,9 +85,9 @@ func main() {
 
 	// Routes
 	e.GET("/db/:env", queryDB)
-	e.File("/", "public/index.html")
-	e.Static("/", "assets")
+	e.Static("/", "web")
+	e.File("/", "web/index.html")
 
 	// Start server
-	e.Logger.Fatal(e.Start(":1323"))
+	e.Logger.Fatal(e.Start(":80"))
 }

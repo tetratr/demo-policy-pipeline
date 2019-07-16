@@ -19,7 +19,7 @@ test:
 clean: 
 	$(GOCLEAN)
 	rm -f build/$(BINARY_NAME)
-	rm -f $(BINARY_UNIX)
+	rm -f $(BINARY_NAME)
 
 deps:
 	dep ensure -update
