@@ -57,13 +57,13 @@ node {
                     println commit_id
 
                     stage('build and push image') {
-                        def app = docker.build "remiphilipppe/demo-policy-pipeline"
+                        def app = docker.build "remiphilippe/demo-policy-pipeline"
                         app.push('lastest')
                         app.push("${commit_id}")
                     }
 
                     stage('Remove Unused docker image') {
-                        sh "docker rmi remiphilipppe/demo-policy-pipeline:${commit_id}"
+                        sh "docker rmi remiphilippe/demo-policy-pipeline:${commit_id}"
                     }
                 }
             }
