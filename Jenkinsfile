@@ -39,7 +39,7 @@ node {
                 
                 echo 'Vetting'
 
-                sh """cd $GOPATH && go tool vet ${paths}"""
+                sh """cd $GOPATH && go vet ${paths}"""
 
                 echo 'Linting'
                 sh """cd $GOPATH && golint ${paths}"""
