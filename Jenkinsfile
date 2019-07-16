@@ -56,26 +56,26 @@ node {
             }
             
             stage('Building image') {
-                steps{
-                    script {
-                        dockerImage = docker.build registry + ":${BUILD_NUMBER}"
-                    }
-                }
+                dockerImage = docker.build registry + ":${BUILD_NUMBER}"
             }
 
-            stage('Deploy Image') {
-                steps{
-                    script {
-                        docker.withRegistry( '', registryCredential ) {
-                            dockerImage.push()
-                    }
-                    }
-                }
-            }
+            docker.withRegistry('', registryCredential) {
+                sh "git rev-parse HEAD > .git/commit-id"
+                def commit_id = readFile('.git/commit-id').trim()
+                println commit_id
 
-            stage('Remove Unused docker image') {
-                steps{
-                    sh "docker rmi ${registry}:${BUILD_NUMBER}"
+                stage('build image') {
+                    def app = docker.build registry
+                }
+                
+
+                stage("publish image") {
+                    app.push 'master'
+                    app.push "${commit_id}"
+                }
+
+                stage('Remove Unused docker image') {
+                    sh "docker rmi ${registry}:${commit_id}"
                 }
             }
         }
