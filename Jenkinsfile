@@ -10,8 +10,8 @@ node {
             
             stage('Checkout'){
                 echo 'Checking out SCM'
-                sh 'mkdir -p ${GOPATH}/src/cmd/project/'
-                dir('${GOPATH}/src/cmd/project/') {
+                sh 'mkdir -p src/cmd/project/'
+                dir('src/cmd/project/') {
                     checkout scm
                 }
             }
