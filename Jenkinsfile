@@ -1,9 +1,4 @@
 node {
-    environment {
-        registry = "remiphilipppe/demo-policy-pipeline"
-        registryCredential = 'docker-hub-remiphilippe'
-    }
-
     ws("${JENKINS_HOME}/jobs/${JOB_NAME}/builds/${BUILD_ID}/") {
         withEnv(["GOPATH=${JENKINS_HOME}/jobs/${JOB_NAME}/builds/${BUILD_ID}"]) {
             env.PATH="${GOPATH}/bin:$PATH"
@@ -55,13 +50,13 @@ node {
                 sh """cd $GOPATH/src/cmd/project/ && make build"""
             }
             
-            docker.withRegistry('', "${registryCredential}") {
-                sh "git rev-parse HEAD > .git/commit-id"
+            docker.withRegistry('', "docker-hub-remiphilippe") {
+                sh "cd $GOPATH/src/cmd/project/ && git rev-parse --short HEAD > .git/commit-id"
                 def commit_id = readFile('.git/commit-id').trim()
                 println commit_id
 
                 stage('build image') {
-                    def app = docker.build "${registry}"
+                    def app = docker.build "remiphilipppe/demo-policy-pipeline"
                 }
                 
 
@@ -71,7 +66,7 @@ node {
                 }
 
                 stage('Remove Unused docker image') {
-                    sh "docker rmi ${registry}:${commit_id}"
+                    sh "docker rmi remiphilipppe/demo-policy-pipeline:${commit_id}"
                 }
             }
         }
