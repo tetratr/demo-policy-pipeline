@@ -52,18 +52,14 @@ node {
             
             docker.withRegistry('', "docker-hub-remiphilippe") {
                 dir('src/cmd/project/') {
-                    sh "cd $GOPATH/src/cmd/project/ && git rev-parse --short HEAD > .git/commit-id"
-                    def commit_id = readFile("$GOPATH/src/cmd/project/.git/commit-id").trim()
+                    sh "git rev-parse --short HEAD > .git/commit-id"
+                    def commit_id = readFile(".git/commit-id").trim()
                     println commit_id
 
-                    stage('build image') {
+                    stage('build and push image') {
                         def app = docker.build "remiphilipppe/demo-policy-pipeline"
-                    }
-                    
-
-                    stage("publish image") {
-                        app.push 'master'
-                        app.push "${commit_id}"
+                        app.push('lastest')
+                        app.push("${commit_id}")
                     }
 
                     stage('Remove Unused docker image') {
