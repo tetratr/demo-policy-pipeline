@@ -33,6 +33,28 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
+  name: policy-to-db
+  namespace: myapp-dev
+spec:
+  podSelector:
+    matchLabels:
+      app: demo-policy-pipeline
+  policyTypes:
+  - Egress
+  egress:
+  - to:
+    - podSelector:
+        matchLabels:
+          app: db
+          location: dc1
+          lifecycle: prod
+    ports:
+    - protocol: TCP
+      port: 3306
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
   name: policy-from-campus
   namespace: myapp-dev
 spec:
