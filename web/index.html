@@ -1,13 +1,24 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
 
     <title>demo-policy-pipeline</title>
 
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- Leave those next 4 lines if you care about users using IE8 -->
@@ -18,79 +29,101 @@
   </head>
   <body>
     <div class="container">
+      <h1>Ze demo-policy-pipeline</h1>
+      <p>
+        This is the <span id="environment"></span> environment with commit id
+        <span id="commit_id"></span>
+      </p>
+      <div class="row">
         <div class="col">
-        <h1>Ze demo-policy-pipeline</h1>
-        <p>This is the <span id="environment"></span> environment with commit id <span id="commit_id"></span></p>
-
-        <div>
-            <button type="button" class="btn btn-primary" id="dev-button">Access the dev DB</button>
-            <button type="button" class="btn btn-primary" id="prod-button">Access the prod DB</button>
+          <button type="button" class="btn btn-primary" id="dev-button">
+            Access the dev DB
+          </button>
+          <div>
+            JSON Output:<br />
+            <pre id="dev-json"></pre>
+          </div>
         </div>
+        <div class="col">
+          <button type="button" class="btn btn-primary" id="prod-button">
+            Access the prod DB
+          </button>
+          <div>
+            JSON Output:<br />
+            <pre id="prod-json"></pre>
+          </div>
+        </div>
+      </div>
+    </div>
 
-        <pre id="json"></pre>
-    </div>
-    </div>
     <!-- Including Bootstrap JS (with its jQuery dependency) so that dynamic components work -->
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
     <script>
-        $body = $("body");
-        
-        $.getJSON( "status", function(data) {
-            $("#environment").text(data["environment"]);
-            $("#commit_id").text(data["commit_id"]);
-        });
+      $body = $("body");
 
-        $(document).on({
-            ajaxStart: function() { $body.addClass("loading");    },
-            ajaxStop: function() { $body.removeClass("loading"); }    
-        });
+      $.getJSON("status", function(data) {
+        $("#environment").text(data["environment"]);
+        $("#commit_id").text(data["commit_id"]);
+      });
 
-        $('#prod-button').on('click', function(event) {
-            event.preventDefault();
-            $('#dev-button').removeClass("btn-primary");
-            $('#dev-button').addClass("btn-secondary")
-            $('#json').html("");
-            $.ajax({
-                url: '/db/prod',
-                type: 'GET',
-                success: function(res) {
-                    $('#prod-button').removeClass("btn-secondary");
-                    $('#prod-button').addClass("btn-success");
-                    $('#json').html(JSON.stringify(res, undefined, 2));
-                },
-                error: function(error) {
-                    console.log(error)
-                    $('#prod-button').removeClass("btn-secondary");
-                    $('#prod-button').addClass("btn-danger")
-                    $('#json').html(JSON.stringify(error["responseJSON"], undefined, 2));
-                }
-            });
-        });
+      $(document).on({
+        ajaxStart: function() {
+          $body.addClass("loading");
+        },
+        ajaxStop: function() {
+          $body.removeClass("loading");
+        }
+      });
 
-        $('#dev-button').on('click', function(event) {
-            event.preventDefault();
-            $('#dev-button').removeClass("btn-primary");
-            $('#dev-button').addClass("btn-secondary")
-            $('#json').html("");
-            $.ajax({
-                url: '/db/dev',
-                type: 'GET',
-                success: function(res) {
-                    $('#dev-button').removeClass("btn-secondary");
-                    $('#dev-button').addClass("btn-success")
-                    $('#json').html(JSON.stringify(res, undefined, 2));
-                },
-                error: function(error) {
-                    console.log(error)
-                    $('#dev-button').removeClass("btn-secondary");
-                    $('#dev-button').addClass("btn-danger")
-                    $('#json').html(JSON.stringify(error["responseJSON"], undefined, 2));
-                }
-            });
+      $("#prod-button").on("click", function(event) {
+        event.preventDefault();
+        $("#dev-button").removeClass("btn-primary");
+        $("#dev-button").addClass("btn-secondary");
+        $("#json").html("");
+        $.ajax({
+          url: "/db/prod",
+          type: "GET",
+          success: function(res) {
+            $("#prod-button").removeClass("btn-secondary");
+            $("#prod-button").addClass("btn-success");
+            $("#prod-json").html(JSON.stringify(res, undefined, 2));
+          },
+          error: function(error) {
+            console.log(error);
+            $("#prod-button").removeClass("btn-secondary");
+            $("#prod-button").addClass("btn-danger");
+            $("#prod-json").html(
+              JSON.stringify(error["responseJSON"], undefined, 2)
+            );
+          }
         });
+      });
 
+      $("#dev-button").on("click", function(event) {
+        event.preventDefault();
+        $("#dev-button").removeClass("btn-primary");
+        $("#dev-button").addClass("btn-secondary");
+        $("#json").html("");
+        $.ajax({
+          url: "/db/dev",
+          type: "GET",
+          success: function(res) {
+            $("#dev-button").removeClass("btn-secondary");
+            $("#dev-button").addClass("btn-success");
+            $("#dev-json").html(JSON.stringify(res, undefined, 2));
+          },
+          error: function(error) {
+            console.log(error);
+            $("#dev-button").removeClass("btn-secondary");
+            $("#dev-button").addClass("btn-danger");
+            $("#dev-json").html(
+              JSON.stringify(error["responseJSON"], undefined, 2)
+            );
+          }
+        });
+      });
     </script>
   </body>
 </html>
