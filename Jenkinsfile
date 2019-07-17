@@ -58,13 +58,27 @@ node {
 
                     stage('build and push image') {
                         def app = docker.build "remiphilippe/demo-policy-pipeline"
-                        app.push('lastest')
+                        app.push('latest')
                         app.push("${commit_id}")
                     }
 
                     stage('Remove Unused docker image') {
                         sh "docker rmi remiphilippe/demo-policy-pipeline:${commit_id}"
                     }
+                }
+            }
+
+            stage("deploy kubernetes") {
+                if (fileExists ("$GOPATH/src/cmd/project/deploy-dev.yml")) {
+                    echo "Deploying Policies"
+                    sh """kubectl apply -f $GOPATH/src/cmd/project/deploy-dev.yml"""
+                }
+            }
+
+            stage("deploy policies") {
+                if (fileExists ("$GOPATH/src/cmd/project/policy-dev.yml")) {
+                    echo "Deploying Policies"
+                    sh """/usr/local/bin/kubepol -file=$GOPATH/src/cmd/project/policy-dev.yml"""
                 }
             }
         }
