@@ -49,40 +49,44 @@
 
         $('#prod-button').on('click', function(event) {
             event.preventDefault();
+            $('#dev-button').removeClass("btn-primary");
+            $('#dev-button').addClass("btn-secondary")
             $('#json').html("");
             $.ajax({
                 url: '/db/prod',
                 type: 'GET',
                 success: function(res) {
-                    $('#prod-button').removeClass("btn-primary");
+                    $('#prod-button').removeClass("btn-secondary");
                     $('#prod-button').addClass("btn-success");
                     $('#json').html(JSON.stringify(res, undefined, 2));
                 },
                 error: function(error) {
                     console.log(error)
-                    $('#prod-button').removeClass("btn-primary");
+                    $('#prod-button').removeClass("btn-secondary");
                     $('#prod-button').addClass("btn-danger")
-                    $('#json').html(JSON.stringify(error, undefined, 2));
+                    $('#json').html(JSON.stringify(error["responseJSON"], undefined, 2));
                 }
             });
         });
 
         $('#dev-button').on('click', function(event) {
             event.preventDefault();
+            $('#dev-button').removeClass("btn-primary");
+            $('#dev-button').addClass("btn-secondary")
             $('#json').html("");
             $.ajax({
                 url: '/db/dev',
                 type: 'GET',
                 success: function(res) {
-                    $('#dev-button').removeClass("btn-primary");
+                    $('#dev-button').removeClass("btn-secondary");
                     $('#dev-button').addClass("btn-success")
                     $('#json').html(JSON.stringify(res, undefined, 2));
                 },
                 error: function(error) {
                     console.log(error)
-                    $('#dev-button').removeClass("btn-primary");
+                    $('#dev-button').removeClass("btn-secondary");
                     $('#dev-button').addClass("btn-danger")
-                    $('#json').html(JSON.stringify(error, undefined, 2));
+                    $('#json').html(JSON.stringify(error["responseJSON"], undefined, 2));
                 }
             });
         });
