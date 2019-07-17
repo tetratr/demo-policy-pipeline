@@ -32,7 +32,7 @@ spec:
     spec:
       containers:
         - name: demo-policy-pipeline
-          image: remiphilippe/demo-policy-pipeline
+          image: remiphilippe/demo-policy-pipeline:latest
           ports:
             - containerPort: 80
               protocol: TCP
