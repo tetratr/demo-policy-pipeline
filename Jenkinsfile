@@ -2,6 +2,10 @@ node {
     ws("${JENKINS_HOME}/jobs/${JOB_NAME}/builds/${BUILD_ID}/") {
         withEnv(["GOPATH=${JENKINS_HOME}/jobs/${JOB_NAME}/builds/${BUILD_ID}"]) {
             env.PATH="${GOPATH}/bin:$PATH"
+            env.H4_SCOPE="Kubernetes"
+            env.OPENAPI_ENDPOINT="https://vesx-1.insbu.net"
+            env.OPENAPI_SECRET=credentials('vesx_secret')
+            env.OPENAPI_KEY=credentials('vesx_key')
             
             stage('Checkout'){
                 echo 'Checking out SCM'
@@ -71,6 +75,7 @@ node {
             stage("deploy kubernetes") {
                 if (fileExists ("$GOPATH/src/cmd/project/deploy-dev.yml")) {
                     echo "Deploying Policies"
+                    sh """sed -ie "s/commit_id_to_be_replaced/${commit_id}/g" $GOPATH/src/cmd/project/deploy-dev.yml"""
                     sh """kubectl apply -f $GOPATH/src/cmd/project/deploy-dev.yml"""
                 }
             }
