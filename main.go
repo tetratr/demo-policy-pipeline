@@ -39,9 +39,9 @@ func queryDB(c echo.Context) error {
 	env := c.Param("env")
 
 	if env == "dev" {
-		db, err = sql.Open("mysql", fmt.Sprintf("dev:dev@tcp(%s:3306)/dev?charset=utf8", devDBAddress))
+		db, err = sql.Open("mysql", fmt.Sprintf("dev:dev@tcp(%s:3306)/dev?charset=utf8&timeout=5s", devDBAddress))
 	} else {
-		db, err = sql.Open("mysql", fmt.Sprintf("prod:prod@tcp(%s:3306)/prod?charset=utf8", prodDBAddress))
+		db, err = sql.Open("mysql", fmt.Sprintf("prod:prod@tcp(%s:3306)/prod?charset=utf8&timeout=5s", prodDBAddress))
 	}
 
 	if err != nil {
