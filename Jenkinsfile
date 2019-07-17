@@ -84,8 +84,10 @@ node {
                         string(credentialsId: 'vesx_key', variable: 'OPENAPI_KEY')
                     ]){
                         echo "Deploying Policies"
+                        def commit_id = readFile("$GOPATH/src/cmd/project/.git/commit-id").trim()
                         env.H4_SCOPE="Kubernetes"
                         env.OPENAPI_ENDPOINT="https://vesx-1.insbu.net"
+                        env.COMMIT_ID = "${commit_id}"
 
                         sh '''
                         set +x
