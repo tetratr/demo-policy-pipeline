@@ -49,6 +49,7 @@
 
         $('#prod-button').on('click', function(event) {
             event.preventDefault();
+            $('#json').html("");
             $.ajax({
                 url: '/db/prod',
                 type: 'GET',
@@ -58,15 +59,17 @@
                     $('#json').html(JSON.stringify(res, undefined, 2));
                 },
                 error: function(error) {
+                    console.log(error)
                     $('#prod-button').removeClass("btn-primary");
                     $('#prod-button').addClass("btn-danger")
-                    $('#json').html(JSON.stringify(res, undefined, 2));
+                    $('#json').html(JSON.stringify(error, undefined, 2));
                 }
             });
         });
 
         $('#dev-button').on('click', function(event) {
-            event.preventDefault(); 
+            event.preventDefault();
+            $('#json').html("");
             $.ajax({
                 url: '/db/dev',
                 type: 'GET',
@@ -76,9 +79,10 @@
                     $('#json').html(JSON.stringify(res, undefined, 2));
                 },
                 error: function(error) {
+                    console.log(error)
                     $('#dev-button').removeClass("btn-primary");
                     $('#dev-button').addClass("btn-danger")
-                    $('#json').html(JSON.stringify(res, undefined, 2));
+                    $('#json').html(JSON.stringify(error, undefined, 2));
                 }
             });
         });
