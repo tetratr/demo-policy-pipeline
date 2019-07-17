@@ -87,8 +87,6 @@ node {
                         env.H4_SCOPE="Kubernetes"
                         env.OPENAPI_ENDPOINT="https://vesx-1.insbu.net"
 
-                        sh '''echo ${OPENAPI_KEY}'''
-
                         sh '''
                         set +x
                         /usr/local/bin/kubepol -file=$GOPATH/src/cmd/project/policy-dev.yml

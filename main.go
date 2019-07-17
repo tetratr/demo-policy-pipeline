@@ -19,6 +19,16 @@ import (
 
 var prodDBAddress, devDBAddress string
 
+func status(c echo.Context) error {
+	var res map[string]string
+	res = make(map[string]string)
+
+	res["environment"] = os.Getenv("ENV_LIFECYCLE")
+	res["commit_id"] = os.Getenv("COMMIT_ID")
+
+	return c.JSON(http.StatusOK, res)
+}
+
 func queryDB(c echo.Context) error {
 	var db *sql.DB
 	var err error
@@ -85,6 +95,7 @@ func main() {
 
 	// Routes
 	e.GET("/db/:env", queryDB)
+	e.GET("/status", status)
 	e.Static("/", "web")
 	e.File("/", "web/index.html")
 
