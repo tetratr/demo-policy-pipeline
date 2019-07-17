@@ -75,6 +75,7 @@ node {
             stage("deploy kubernetes") {
                 if (fileExists ("$GOPATH/src/cmd/project/deploy-dev.yml")) {
                     echo "Deploying Policies"
+                    def commit_id = readFile("$GOPATH/src/cmd/project/.git/commit-id").trim()
                     sh """sed -ie "s/commit_id_to_be_replaced/${commit_id}/g" $GOPATH/src/cmd/project/deploy-dev.yml"""
                     sh """kubectl apply -f $GOPATH/src/cmd/project/deploy-dev.yml"""
                 }
