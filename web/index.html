@@ -108,6 +108,8 @@
         }).always(function (){
             setTimeout(function() {
                 getStatus();
+                updateProd();
+                updateDev();
             }, 10000);
         });
     }
