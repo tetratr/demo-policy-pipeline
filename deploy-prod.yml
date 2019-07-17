@@ -41,3 +41,5 @@ spec:
               value: "172.20.0.199"
             - name: DEV_DB
               value: "172.20.0.193"
+            - name: COMMIT_ID
+              value: "commit_id_to_be_replaced"

@@ -2,10 +2,6 @@ node {
     ws("${JENKINS_HOME}/jobs/${JOB_NAME}/builds/${BUILD_ID}/") {
         withEnv(["GOPATH=${JENKINS_HOME}/jobs/${JOB_NAME}/builds/${BUILD_ID}"]) {
             env.PATH="${GOPATH}/bin:$PATH"
-            env.H4_SCOPE="Kubernetes"
-            env.OPENAPI_ENDPOINT="https://vesx-1.insbu.net"
-            env.OPENAPI_SECRET=credentials('vesx_secret')
-            env.OPENAPI_KEY=credentials('vesx_key')
             
             stage('Checkout'){
                 echo 'Checking out SCM'
@@ -83,8 +79,19 @@ node {
 
             stage("deploy policies") {
                 if (fileExists ("$GOPATH/src/cmd/project/policy-dev.yml")) {
-                    echo "Deploying Policies"
-                    sh """/usr/local/bin/kubepol -file=$GOPATH/src/cmd/project/policy-dev.yml"""
+                    withCredentials([
+                        string(credentialsId: 'vesx_secret', variable: 'H4_SECRET'),
+                        string(credentialsId: 'vesx_key', variable: 'H4_KEY')
+                    ]){
+                        echo "Deploying Policies"
+                        env.H4_SCOPE="Kubernetes"
+                        env.OPENAPI_ENDPOINT="https://vesx-1.insbu.net"
+                        env.OPENAPI_SECRET=${H4_SECRET}
+                        env.OPENAPI_KEY=${H4_KEY}
+
+
+                        sh """/usr/local/bin/kubepol -file=$GOPATH/src/cmd/project/policy-dev.yml"""
+                }
                 }
             }
         }
