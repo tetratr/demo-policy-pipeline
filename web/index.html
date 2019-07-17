@@ -61,69 +61,68 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
     <script>
-      $body = $("body");
-
-      $.getJSON("status", function(data) {
-        $("#environment").text(data["environment"]);
-        $("#commit_id").text(data["commit_id"]);
-      });
-
-      $(document).on({
-        ajaxStart: function() {
-          $body.addClass("loading");
-        },
-        ajaxStop: function() {
-          $body.removeClass("loading");
-        }
-      });
-
-      $("#prod-button").on("click", function(event) {
-        event.preventDefault();
-        $("#dev-button").removeClass("btn-primary");
-        $("#dev-button").addClass("btn-secondary");
-        $("#json").html("");
+      function updateProd() {
+        $("#prod-button").removeClass().addClass("btn btn-secondary");
+        $("#prod-json").html("");
         $.ajax({
           url: "/db/prod",
           type: "GET",
           success: function(res) {
-            $("#prod-button").removeClass("btn-secondary");
-            $("#prod-button").addClass("btn-success");
+            $("#prod-button").removeClass().addClass("btn btn-success");
             $("#prod-json").html(JSON.stringify(res, undefined, 2));
           },
           error: function(error) {
             console.log(error);
-            $("#prod-button").removeClass("btn-secondary");
-            $("#prod-button").addClass("btn-danger");
+            $("#prod-button").removeClass().addClass("btn btn-danger");
             $("#prod-json").html(
               JSON.stringify(error["responseJSON"], undefined, 2)
             );
           }
         });
-      });
+      }
 
-      $("#dev-button").on("click", function(event) {
-        event.preventDefault();
-        $("#dev-button").removeClass("btn-primary");
-        $("#dev-button").addClass("btn-secondary");
-        $("#json").html("");
+      function updateDev() {
+        $("#dev-button").removeClass().addClass("btn btn-secondary");
+        $("#dev-json").html("");
         $.ajax({
           url: "/db/dev",
           type: "GET",
           success: function(res) {
-            $("#dev-button").removeClass("btn-secondary");
-            $("#dev-button").addClass("btn-success");
+            $("#dev-button").removeClass().addClass("btn btn-success");
             $("#dev-json").html(JSON.stringify(res, undefined, 2));
           },
           error: function(error) {
             console.log(error);
-            $("#dev-button").removeClass("btn-secondary");
-            $("#dev-button").addClass("btn-danger");
+            $("#dev-button").removeClass().addClass("btn btn-danger");
             $("#dev-json").html(
               JSON.stringify(error["responseJSON"], undefined, 2)
             );
           }
         });
+      }
+
+      function getStatus() {
+        $.getJSON("status", function(data) {
+            $("#environment").text(data["environment"]);
+            $("#commit_id").text(data["commit_id"]);
+        }).always(function (){
+            setTimeout(function() {
+                getStatus();
+            }, 10000);
+        });
+    }
+
+      $("#prod-button").on("click", function(event) {
+        event.preventDefault();
+        updateProd();
       });
+
+      $("#dev-button").on("click", function(event) {
+        event.preventDefault();
+        updateDev();
+      });
+
+      getStatus();
     </script>
   </body>
 </html>
