@@ -30,9 +30,11 @@ spec:
         app: demo-policy-pipeline
         lifecycle: dev
     spec:
+      terminationGracePeriodSeconds: 30
       containers:
         - name: demo-policy-pipeline
           image: remiphilippe/demo-policy-pipeline:latest
+          imagePullPolicy: "Always"
           ports:
             - containerPort: 80
               protocol: TCP
