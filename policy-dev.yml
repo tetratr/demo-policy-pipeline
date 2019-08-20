@@ -49,8 +49,27 @@ spec:
 #           location: dc1
 #           lifecycle: prod
 #     ports:
-#     - protocol: TCP
+#     - protocol: TCP  
 #       port: 3306
+# ---
+# apiVersion: networking.k8s.io/v1
+# kind: NetworkPolicy
+# metadata:
+#   name: policy-from-campus
+#   namespace: myapp-dev
+# spec:
+#   podSelector:
+#     matchLabels:
+#       system/service_name: frontend
+#   policyTypes:
+#   - Ingress
+#   ingress:
+#   - from:
+#     - ipBlock:
+#         cidr: 172.20.0.71/32
+#     ports:
+#     - protocol: TCP
+#       port: 80
 # ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -65,8 +84,10 @@ spec:
   - Ingress
   ingress:
   - from:
-    - ipBlock:
-        cidr: 172.20.0.71/32
+    - podSelector:
+      matchLabels:
+        LDAP_primaryGroupID: 1107
+        source: tag
     ports:
     - protocol: TCP
       port: 80
