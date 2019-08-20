@@ -86,7 +86,7 @@ spec:
   - from:
     - podSelector:
       matchLabels:
-        LDAP_primaryGroupID: 1107
+        LDAP_primaryGroupID: "1107"
         source: tag
     ports:
     - protocol: TCP
