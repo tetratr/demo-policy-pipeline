@@ -85,9 +85,9 @@ spec:
   ingress:
   - from:
     - podSelector:
-        matchLabels:
-          LDAP_primaryGroupID: 1107
-          source: tag
+      matchLabels:
+        LDAP_primaryGroupID: 1107
+        source: tag
     ports:
     - protocol: TCP
       port: 80
