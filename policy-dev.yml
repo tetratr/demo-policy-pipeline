@@ -55,27 +55,7 @@ spec:
 #     - protocol: TCP  
 #       port: 3306
 # ---
-# policy from anywhere to pods
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
-  name: policy-from-campus
-  namespace: myapp-dev
-spec:
-  podSelector:
-    matchLabels:
-      app: demo-policy-pipeline
-  policyTypes:
-  - Ingress
-  ingress:
-  - from:
-    - ipBlock:
-        cidr: 172.20.0.71/32
-    ports:
-    - protocol: TCP
-      port: 80
-# ---
-# # policy from campus with CIDR using services (F5 dependent)
+# # policy from anywhere to pods
 # apiVersion: networking.k8s.io/v1
 # kind: NetworkPolicy
 # metadata:
@@ -84,7 +64,7 @@ spec:
 # spec:
 #   podSelector:
 #     matchLabels:
-#       system/service_name: frontend
+#       app: demo-policy-pipeline
 #   policyTypes:
 #   - Ingress
 #   ingress:
@@ -94,7 +74,27 @@ spec:
 #     ports:
 #     - protocol: TCP
 #       port: 80
-# ---
+---
+# policy from campus with CIDR using services (F5 dependent)
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: policy-from-campus
+  namespace: myapp-dev
+spec:
+  podSelector:
+    matchLabels:
+      system/service_name: frontend
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - ipBlock:
+        cidr: 172.20.0.71/32
+    ports:
+    - protocol: TCP
+      port: 80
+---
 # # policy from campus with CIDR using services (F5 dependent)
 # apiVersion: networking.k8s.io/v1
 # kind: NetworkPolicy
