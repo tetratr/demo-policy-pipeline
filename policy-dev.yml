@@ -9,29 +9,29 @@ spec:
   - Ingress
   - Egress
 ---
-# # policy from pods to dev db
-# apiVersion: networking.k8s.io/v1
-# kind: NetworkPolicy
-# metadata:
-#   name: policy-to-db
-#   namespace: myapp-dev
-# spec:
-#   podSelector:
-#     matchLabels:
-#       app: demo-policy-pipeline
-#   policyTypes:
-#   - Egress
-#   egress:
-#   - to:
-#     - podSelector:
-#         matchLabels:
-#           app: db
-#           location: dc1
-#           lifecycle: dev
-#     ports:
-#     - protocol: TCP
-#       port: 3306
-# ---
+# policy from pods to dev db
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: policy-to-db
+  namespace: myapp-dev
+spec:
+  podSelector:
+    matchLabels:
+      app: demo-policy-pipeline
+  policyTypes:
+  - Egress
+  egress:
+  - to:
+    - podSelector:
+        matchLabels:
+          app: db
+          location: dc1
+          lifecycle: dev
+    ports:
+    - protocol: TCP
+      port: 3306
+---
 # # policy from pods to prod db
 # apiVersion: networking.k8s.io/v1
 # kind: NetworkPolicy
