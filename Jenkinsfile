@@ -86,7 +86,7 @@ node {
                     ]){
                         echo "Deploying Policies"
                         def commit_id = readFile("$GOPATH/src/cmd/project/.git/commit-id").trim()
-                        env.H4_SCOPE="Kubernetes"
+                        env.H4_SCOPE="vesx3-kube"
                         env.OPENAPI_ENDPOINT="https://demo.tetrationpreview.com"
                         env.COMMIT_ID = "${commit_id}"
                         //TODO: make this conditional to env
