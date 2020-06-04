@@ -76,6 +76,7 @@ spec:
 #       port: 80
 ---
 # policy from campus with CIDR using services (F5 dependent)
+# make sure we don't shoot ourself in the foot...
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
