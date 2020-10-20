@@ -1,0 +1,75 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+  labels:
+    app: demo-policy-pipeline
+    lifecycle: dev
+  namespace: myapp-dev
+spec:
+  ports:
+    - port: 80
+      protocol: TCP
+  selector:
+    app: demo-policy-pipeline
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: frontend-ingress
+  namespace: myapp-dev
+  annotations:
+  # See the k8s-bigip-ctlr documentation for information about
+  # all Ingress Annotations
+  # https://clouddocs.f5.com/products/connectors/k8s-bigip-ctlr/latest/#supported-ingress-annotations
+    virtual-server.f5.com/ip: "10.28.121.91"
+    virtual-server.f5.com/partition: "xfd-kube"
+    virtual-server.f5.com/health: |
+     [
+        {
+          "path":     "/",
+          "send":     "GET /",
+          "interval": 5,
+          "timeout":  10
+        }
+      ]
+spec:
+  backend:
+    # The name of the Service you want to expose to external traffic
+    serviceName: frontend
+    servicePort: 80
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: demo-policy-pipeline
+  namespace: myapp-dev
+spec:
+  selector:
+    matchLabels:
+      app: demo-policy-pipeline
+      lifecycle: dev
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: demo-policy-pipeline
+        lifecycle: dev
+    spec:
+      terminationGracePeriodSeconds: 30
+      containers:
+        - name: demo-policy-pipeline
+          image: tetratr/demo-policy-pipeline:latest
+          imagePullPolicy: "Always"
+          ports:
+            - containerPort: 80
+              protocol: TCP
+          env:
+            - name: PROD_DB
+              value: "172.20.0.237"
+            - name: DEV_DB
+              value: "172.20.0.238"
+            - name: ENV_LIFECYCLE
+              value: "dev"
+            - name: COMMIT_ID
+              value: "commit_id_to_be_replaced"
