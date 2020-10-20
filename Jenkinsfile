@@ -81,8 +81,8 @@ node {
             stage("deploy policies") {
                 if (fileExists ("$GOPATH/src/cmd/project/policy-dev.yml")) {
                     withCredentials([
-                        string(credentialsId: 'vesx_secret', variable: 'OPENAPI_SECRET'),
-                        string(credentialsId: 'vesx_key', variable: 'OPENAPI_KEY')
+                        string(credentialsId: 'secret_xfd_tetrationpreview_com', variable: 'OPENAPI_SECRET'),
+                        string(credentialsId: 'key_xfd_tetrationpreview_com', variable: 'OPENAPI_KEY')
                     ]){
                         echo "Deploying Policies"
                         def commit_id = readFile("$GOPATH/src/cmd/project/.git/commit-id").trim()
