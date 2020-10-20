@@ -50,31 +50,31 @@ node {
                 sh """cd $GOPATH/src/cmd/project/ && make build"""
             }
             
-            docker.withRegistry('', "docker-hub-remiphilippe") {
+            docker.withRegistry('', "hub_tetratr") {
                 dir('src/cmd/project/') {
                     sh "git rev-parse --short HEAD > .git/commit-id"
                     def commit_id = readFile(".git/commit-id").trim()
                     println commit_id
 
                     stage('build and push image') {
-                        def app = docker.build "remiphilippe/demo-policy-pipeline"
+                        def app = docker.build "tetratr/demo-policy-pipeline"
                         app.push('latest')
                         app.push("${commit_id}")
                     }
 
                     stage('Remove Unused docker image') {
-                        sh "docker rmi remiphilippe/demo-policy-pipeline:${commit_id}"
+                        sh "docker rmi tetratr/demo-policy-pipeline:${commit_id}"
                     }
                 }
             }
 
             stage("deploy kubernetes") {
-                if (fileExists ("$GOPATH/src/cmd/project/deploy-dev.yml")) {
+                if (fileExists ("$GOPATH/src/cmd/project/deploy-sjc15.yml")) {
                     echo "Deploying Policies"
                     def commit_id = readFile("$GOPATH/src/cmd/project/.git/commit-id").trim()
-                    sh """sed -ie "s/commit_id_to_be_replaced/${commit_id}/g" $GOPATH/src/cmd/project/deploy-dev.yml"""
-                    sh """kubectl config use-context kubernetes-admin@vesx-3.local"""
-                    sh """kubectl apply -f $GOPATH/src/cmd/project/deploy-dev.yml"""
+                    sh """sed -ie "s/commit_id_to_be_replaced/${commit_id}/g" $GOPATH/src/cmd/project/deploy-sjc15.yml"""
+                    sh """kubectl config use-context kubernetes-admin@kubernetes"""
+                    sh """kubectl apply -f $GOPATH/src/cmd/project/deploy-sjc15.yml"""
                 }
             }
 
@@ -86,11 +86,11 @@ node {
                     ]){
                         echo "Deploying Policies"
                         def commit_id = readFile("$GOPATH/src/cmd/project/.git/commit-id").trim()
-                        env.H4_SCOPE="vesx3-kube"
-                        env.OPENAPI_ENDPOINT="https://demo.tetrationpreview.com"
+                        //env.H4_SCOPE="vesx3-kube"
+                        //env.OPENAPI_ENDPOINT="https://demo.tetrationpreview.com"
                         env.COMMIT_ID = "${commit_id}"
                         //TODO: make this conditional to env
-                        env.F5_VIP = "172.18.252.11"
+                        //env.F5_VIP = "172.18.252.11"
 
                         sh '''
                         set +x
