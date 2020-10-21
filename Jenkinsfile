@@ -17,9 +17,7 @@ node {
                         string(credentialsId: 'secret_xfd_tetrationpreview_com', variable: 'OPENAPI_SECRET'),
                         string(credentialsId: 'key_xfd_tetrationpreview_com', variable: 'OPENAPI_KEY')
                     ]){
-                        echo "Deploying Policies"
-                        def commit_id = readFile("$GOPATH/src/cmd/project/.git/commit-id").trim()
-                        env.COMMIT_ID = "${commit_id}"
+                        echo "Linting Policies"
 
                         sh '''
                         set +x
