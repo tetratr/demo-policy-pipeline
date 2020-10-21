@@ -26,35 +26,34 @@ spec:
   - to:
     - podSelector:
         matchLabels:
-          app: db
-          location: dc1
-          lifecycle: dev
+          service: Database
+          environment: Prod
     ports:
     - protocol: TCP
       port: 3306
 # policy from pods to prod db
----
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
-  name: policy-to-db
-  namespace: myapp-dev
-spec:
-  podSelector:
-    matchLabels:
-      app: demo-policy-pipeline
-  policyTypes:
-  - Egress
-  egress:
-  - to:
-    - podSelector:
-        matchLabels:
-          app: db
-          location: dc1
-          lifecycle: prod
-    ports:
-    - protocol: TCP  
-      port: 3306
+# ---
+# apiVersion: networking.k8s.io/v1
+# kind: NetworkPolicy
+# metadata:
+#   name: policy-to-db
+#   namespace: myapp-dev
+# spec:
+#   podSelector:
+#     matchLabels:
+#       app: demo-policy-pipeline
+#   policyTypes:
+#   - Egress
+#   egress:
+#   - to:
+#     - podSelector:
+#         matchLabels:
+#           app: db
+#           location: dc1
+#           lifecycle: prod
+#     ports:
+#     - protocol: TCP  
+#       port: 3306
 # policy from anywhere to pods
 # ---
 # apiVersion: networking.k8s.io/v1
@@ -92,7 +91,7 @@ spec:
   ingress:
   - from:
     - ipBlock:
-        cidr: 172.20.0.71/32
+        cidr: 10.28.121.202/32
     ports:
     - protocol: TCP
       port: 80
