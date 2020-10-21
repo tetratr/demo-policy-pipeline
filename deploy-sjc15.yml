@@ -66,9 +66,9 @@ spec:
               protocol: TCP
           env:
             - name: PROD_DB
-              value: "172.20.0.237"
+              value: "10.28.121.94"
             - name: DEV_DB
-              value: "172.20.0.238"
+              value: "10.28.121.93"
             - name: ENV_LIFECYCLE
               value: "dev"
             - name: COMMIT_ID
