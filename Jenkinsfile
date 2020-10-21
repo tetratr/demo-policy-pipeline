@@ -10,8 +10,26 @@ node {
                     checkout scm
                 }
             }
+
+            stage("Lint Policies") {
+                if (fileExists ("$GOPATH/src/cmd/project/policy-sjc15.yml")) {
+                    withCredentials([
+                        string(credentialsId: 'secret_xfd_tetrationpreview_com', variable: 'OPENAPI_SECRET'),
+                        string(credentialsId: 'key_xfd_tetrationpreview_com', variable: 'OPENAPI_KEY')
+                    ]){
+                        echo "Deploying Policies"
+                        def commit_id = readFile("$GOPATH/src/cmd/project/.git/commit-id").trim()
+                        env.COMMIT_ID = "${commit_id}"
+
+                        sh '''
+                        set +x
+                        /usr/local/bin/kubepol -file=$GOPATH/src/cmd/project/policy-sjc15.yml -lint
+                        '''
+                }
+                }
+            }
             
-            stage('Pre Test'){
+            stage('Setup'){
                 echo 'Pulling Dependencies'
         
                 sh 'go version'
@@ -68,7 +86,7 @@ node {
                 }
             }
 
-            stage("deploy kubernetes") {
+            stage("Deploy Kubernetes") {
                 if (fileExists ("$GOPATH/src/cmd/project/deploy-sjc15.yml")) {
                     echo "Deploying Policies"
                     def commit_id = readFile("$GOPATH/src/cmd/project/.git/commit-id").trim()
@@ -78,8 +96,8 @@ node {
                 }
             }
 
-            stage("deploy policies") {
-                if (fileExists ("$GOPATH/src/cmd/project/policy-dev.yml")) {
+            stage("Deploy Policies") {
+                if (fileExists ("$GOPATH/src/cmd/project/policy-sjc15.yml")) {
                     withCredentials([
                         string(credentialsId: 'secret_xfd_tetrationpreview_com', variable: 'OPENAPI_SECRET'),
                         string(credentialsId: 'key_xfd_tetrationpreview_com', variable: 'OPENAPI_KEY')
