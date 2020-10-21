@@ -94,7 +94,7 @@ node {
 
                         sh '''
                         set +x
-                        /usr/local/bin/kubepol -file=$GOPATH/src/cmd/project/policy-dev.yml
+                        /usr/local/bin/kubepol -file=$GOPATH/src/cmd/project/policy-sjc15.yml
                         '''
                 }
                 }
