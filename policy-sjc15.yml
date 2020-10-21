@@ -28,6 +28,7 @@ spec:
         matchLabels:
           service: Database
           environment: Prod
+          source: tag
     ports:
     - protocol: TCP
       port: 3306
